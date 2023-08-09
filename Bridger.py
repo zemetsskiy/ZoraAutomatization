@@ -38,7 +38,8 @@ class Bridger:
                 'gas': round(contract.functions.depositTransaction(wallet_address, bridge_amount, 100000, False,
                                                                    b'').estimate_gas(
                     {'from': wallet_address, 'value': bridge_amount,
-                     'nonce': web3.eth.get_transaction_count(wallet_address)}) * 1.15)
+                     'nonce': web3.eth.get_transaction_count(wallet_address)}) * 1.15),
+                'nonce': web3.eth.get_transaction_count(wallet_address)
             }
             )
 
@@ -51,7 +52,7 @@ class Bridger:
             bridge_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_bridge_tx_hash, timeout=300)
 
             if bridge_tx_receipt.status == 1:
-                logger.info(f"Successfully bridged: {bridge_amount} eth to Zora")
+                logger.info(f"Successfully bridged: {bridge_amount} wei to Zora")
                 logger.info(f"Transaction: https://etherscan.io/tx/{bridge_tx_hash}")
 
             else:
@@ -62,7 +63,10 @@ class Bridger:
                 have = int(re.search(r'have (\d+)', err.args[0]['message']).group(1))
                 want = int(re.search(r'want (\d+)', err.args[0]['message']).group(1))
                 gas = int(re.search(r'gas (\d+)', err.args[0]['message']).group(1))
-                logger.error(f"Insufficient funds for gas * price + value. Want: {want} Have: {have} Gas: {gas}")
+                if have:
+                    logger.error(f"Insufficient funds for gas * price + value. Want: {want} Have: {have} Gas: {gas}")
+                else:
+                    logger.error(f"Insufficient funds for gas * price + value. Choose a smaller max bridge amount value.")
             else:
                 logger.error(f"Something went wrong: {err}")
 
