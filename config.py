@@ -1,5 +1,6 @@
 rpcs = {
-        "eth": "https://ethereum.publicnode.com"
+        "eth": "https://ethereum.publicnode.com",
+        "zora": "https://rpc.zora.energy"
 }
 
 contracts = {
