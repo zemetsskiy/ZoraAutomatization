@@ -59,14 +59,15 @@ class Bridger:
                 logger.error("Something went wrong while bridging")
 
         except Exception as err:
-            if "insufficient funds" in str(err):
+            if "insufficient funds" and "have" in str(err):
                 have = int(re.search(r'have (\d+)', err.args[0]['message']).group(1))
                 want = int(re.search(r'want (\d+)', err.args[0]['message']).group(1))
                 gas = int(re.search(r'gas (\d+)', err.args[0]['message']).group(1))
-                if have:
-                    logger.error(f"Insufficient funds for gas * price + value. Want: {want} Have: {have} Gas: {gas}")
-                else:
-                    logger.error(f"Insufficient funds for gas * price + value. Choose a smaller max bridge amount value.")
+                logger.error(f"Insufficient funds for gas * price + value. Want: {want} Have: {have} Gas: {gas}")
+
+            elif "insufficient funds" in str(err):
+                logger.error(f"Insufficient funds for gas * price + value.")
+
             else:
                 logger.error(f"Something went wrong: {err}")
 
