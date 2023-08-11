@@ -1,4 +1,7 @@
+import asyncio
 import re
+import web3.exceptions
+
 
 from web3 import Web3
 from logger import logger
@@ -9,7 +12,7 @@ class Minter:
     def __init__(self, pk):
         self.pk = pk
 
-    def mint(self, nft_address, nft_id: int):
+    async def mint(self, nft_address, nft_id: int):
         web3 = Web3(Web3.HTTPProvider(rpcs["zora"], request_kwargs={'proxies':{'https': 'http://' + "pnorwyha:snmfocltb81h@209.99.165.189:6094", 'http': 'http://' + "pnorwyha:snmfocltb81h@209.99.165.189:6094"}}))
         logger.info(f"Successfully connected to {rpcs['zora']}")
 
@@ -43,13 +46,22 @@ class Minter:
 
             logger.info(f"Mint tx hash: {mint_tx_hash}")
 
-            mint_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_mint_tx_hash, timeout=300)
+            for i in range(5):
+                await asyncio.sleep(5)
+                try:
+                    mint_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_mint_tx_hash, timeout=300)
 
-            if mint_tx_receipt.status == 1:
-                logger.info(f"Transaction: https://explorer.zora.energy/tx/{mint_tx_hash}")
+                    if mint_tx_receipt.status == 1:
+                        logger.info(f"Transaction: https://explorer.zora.energy/tx/{mint_tx_hash}")
 
-            else:
-                logger.error("Something went wrong while minting")
+                    else:
+                        logger.error("Something went wrong while minting")
+                except web3.exceptions.TransactionNotFound as err:
+                    logger.error(f"Something went wrong while minting: {err}")
+                    continue
+                except Exception as err:
+                    logger.error(f"Something went wrong while minting: {err}")
+
 
         except Exception as err:
             if "insufficient funds" and "have" in str(err):
@@ -64,7 +76,7 @@ class Minter:
             else:
                 logger.error(f"Something went wrong: {err}")
 
-    def purchase(self, nft_contract_address, value_to_send): # ZoraCreator1155Impl
+    async def purchase(self, nft_contract_address, value_to_send): # ZoraCreator1155Impl
 
         web3 = Web3(Web3.HTTPProvider(rpcs["zora"], request_kwargs={
             'proxies': {'https': 'http://' + "pnorwyha:snmfocltb81h@209.99.165.189:6094",
@@ -98,13 +110,22 @@ class Minter:
 
             logger.info(f"Mint tx hash: {mint_tx_hash}")
 
-            mint_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_mint_tx_hash, timeout=300)
+            for i in range(5):
+                await asyncio.sleep(5)
+                try:
+                    mint_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_mint_tx_hash, timeout=300)
 
-            if mint_tx_receipt.status == 1:
-                logger.info(f"Transaction: https://explorer.zora.energy/tx/{mint_tx_hash}")
+                    if mint_tx_receipt.status == 1:
+                        logger.info(f"Transaction: https://explorer.zora.energy/tx/{mint_tx_hash}")
+                    else:
+                        logger.error("Something went wrong while minting")
+                except web3.exceptions.TransactionNotFound as err:
+                    logger.error(f"Something went wrong while minting: {err}")
+                    continue
+                except Exception as err:
+                    logger.error(f"Something went wrong while minting: {err}")
 
-            else:
-                logger.error("Something went wrong while minting")
+
 
         except Exception as err:
             if "insufficient funds" and "have" in str(err):
@@ -119,7 +140,7 @@ class Minter:
             else:
                 logger.error(f"Something went wrong: {err}")
 
-    def createERC721(self, name, symbol, mintPrice, mintLimitPerAddress, editionSize, royaltyBPS, description, imageURI): # ZoraNFTCreator
+    async def createERC721(self, name, symbol, mintPrice, mintLimitPerAddress, editionSize, royaltyBPS, description, imageURI): # ZoraNFTCreator
 
         web3 = Web3(Web3.HTTPProvider(rpcs["zora"], request_kwargs={
             'proxies': {'https': 'http://' + "pnorwyha:snmfocltb81h@209.99.165.189:6094",
@@ -159,17 +180,23 @@ class Minter:
 
             logger.info(f"Contract create tx hash: {create_tx_hash}")
 
-            create_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_create_tx_hash, timeout=300)
-
-            if create_tx_receipt.status == 1:
-                logger.info(f"Transaction: https://explorer.zora.energy/tx/{create_tx_hash}")
-                logger.info(f"Contract return: {create_tx}")
-            else:
-                logger.error("Something went wrong while contract creating")
+            for i in range(5):
+                await asyncio.sleep(5)
+                try:
+                    create_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_create_tx_hash, timeout=300)
+                    if create_tx_receipt.status == 1:
+                        logger.info(f"Transaction: https://explorer.zora.energy/tx/{create_tx_hash}")
+                        logger.info(f"Contract return: {create_tx}")
+                    else:
+                        logger.error("Something went wrong while contract creating")
+                except web3.exceptions.TransactionNotFound as err:
+                    logger.error(f"Something went wrong while contract creating: {err}")
+                    continue
+                except Exception as err:
+                    logger.error(f"Something went wrong while contract creating: {err}")
 
         except Exception as err:
             if "insufficient funds" in str(err):
                 logger.error(f"Insufficient funds for gas * price + value.")
-
             else:
                 logger.error(f"Something went wrong: {err}")
