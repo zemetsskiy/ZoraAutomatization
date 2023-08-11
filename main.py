@@ -26,27 +26,27 @@ async def run():
         minter = Minter(pk)
 
         # Минт1
-        minter.purchase("0x3f1201a68b513049f0f6e182f742a0dce970d8cd", value_to_send=0.000777)
+        await minter.purchase("0x3f1201a68b513049f0f6e182f742a0dce970d8cd", value_to_send=0.000777)
         time.sleep(33)
         # Минт2
-        minter.mint("0x5ca17551b686baf0c6bd7727e153b95be9b1ae0d", 1)
+        await minter.mint("0x5ca17551b686baf0c6bd7727e153b95be9b1ae0d", 1)
         time.sleep(60)
         # Минт3
-        minter.mint("0x4c0c2dd31d2661e8bcec60a42e803dcc6f81baad", 7)
+        await minter.mint("0x4c0c2dd31d2661e8bcec60a42e803dcc6f81baad", 7)
 
         # Минт4
-        minter.purchase("0x34573d139A15e5d3D129AD6AE20c3C8B221fD921", value_to_send=0.001007)
+        await minter.purchase("0x34573d139A15e5d3D129AD6AE20c3C8B221fD921", value_to_send=0.001007)
         # Минт5
-        minter.purchase("0xbc8ae1adbfb0052babae00d3211f0be30f1fbd5c", value_to_send=0.000777)
+        await minter.purchase("0xbc8ae1adbfb0052babae00d3211f0be30f1fbd5c", value_to_send=0.000777)
         time.sleep(60)
         # Минт6
-        minter.purchase("0xcba60a105b5c2fdaf9dd27e733132cc4f7ac9a66", value_to_send=0.000777)
+        await minter.purchase("0xcba60a105b5c2fdaf9dd27e733132cc4f7ac9a66", value_to_send=0.000777)
         # Минт7
-        minter.purchase("0xd4889d519b1ab9b2fa8634e0271118de480f6d32", value_to_send=0.000777)
+        await minter.purchase("0xd4889d519b1ab9b2fa8634e0271118de480f6d32", value_to_send=0.000777)
         # Минт8
-        minter.purchase("0xcdc9c8060c7c357ee25cd80455cbe05b226d291f", value_to_send=0.000778)
+        await minter.purchase("0xcdc9c8060c7c357ee25cd80455cbe05b226d291f", value_to_send=0.000778)
         # Минт9
-        minter.purchase("0xf6087d1e9be8b71b339a4a80f31e8826af9d0fbb", value_to_send=0.000777)
+        await minter.purchase("0xf6087d1e9be8b71b339a4a80f31e8826af9d0fbb", value_to_send=0.000777)
 
         # Создание нфт
         try:
