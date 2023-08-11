@@ -12,7 +12,7 @@ class Bridger:
     def __init__(self, pk):
         self.pk = pk
 
-    def bridge(self, bridge_amount):
+    def eth_zora_bridge(self, bridge_amount):
         web3 = Web3(Web3.HTTPProvider(rpcs["eth"]))
         logger.info(f"Successfully connected to {rpcs['eth']}")
 
