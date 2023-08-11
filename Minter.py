@@ -15,6 +15,7 @@ from config import rpcs, nft_contract_abi, nft_ZoraCreator_contract_abi, ZoraNFT
 class Minter:
     def __init__(self, pk):
         self.pk = pk
+        self.collectionAddress = ""
 
     async def mint(self, nft_address, nft_id: int):
         web3 = Web3(Web3.HTTPProvider(rpcs["zora"], request_kwargs={'proxies':{'https': 'http://' + "pnorwyha:snmfocltb81h@209.99.165.189:6094", 'http': 'http://' + "pnorwyha:snmfocltb81h@209.99.165.189:6094"}}))
@@ -188,14 +189,18 @@ class Minter:
                 await asyncio.sleep(5)
                 try:
                     create_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_create_tx_hash, timeout=300)
+
                     if create_tx_receipt.status == 1:
+                        log = create_tx_receipt['logs'][-1]
+
+                        if log:
+                            self.collectionAddress = "0x" + log['topics'][2].hex()[-40:]
+
+                        logger.info(f"Created collection address: {self.collectionAddress}")
                         logger.info(f"Transaction: https://explorer.zora.energy/tx/{create_tx_hash}")
-                        logger.info(f"Contract return: {create_tx}")
                     else:
                         logger.error("Something went wrong while contract creating")
-                except web3.exceptions.TransactionNotFound as err:
-                    logger.error(f"Something went wrong while contract creating: {err}")
-                    continue
+
                 except Exception as err:
                     logger.error(f"Something went wrong while contract creating: {err}")
 
