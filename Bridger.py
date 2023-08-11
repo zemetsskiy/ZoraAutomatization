@@ -1,3 +1,4 @@
+import asyncio
 import random
 import re
 
@@ -49,14 +50,21 @@ class Bridger:
 
             logger.info(f"Bridge tx hash: {bridge_tx_hash}")
 
-            bridge_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_bridge_tx_hash, timeout=300)
+            for i in range(5):
+                await asyncio.sleep(5)
+                try:
+                    bridge_tx_receipt = web3.eth.wait_for_transaction_receipt(raw_bridge_tx_hash, timeout=300)
 
-            if bridge_tx_receipt.status == 1:
-                logger.info(f"Successfully bridged: {bridge_amount} wei to Zora")
-                logger.info(f"Transaction: https://etherscan.io/tx/{bridge_tx_hash}")
-
-            else:
-                logger.error("Something went wrong while bridging")
+                    if bridge_tx_receipt.status == 1:
+                        logger.info(f"Successfully bridged: {bridge_amount} wei to Zora")
+                        logger.info(f"Transaction: https://etherscan.io/tx/{bridge_tx_hash}")
+                    else:
+                        logger.error("Something went wrong while bridging")
+                except web3.exceptions.TransactionNotFound as err:
+                    logger.error(f"Something went wrong while bridging: {err}")
+                    continue
+                except Exception as err:
+                    logger.error(f"Something went wrong while bridging: {err}")
 
         except Exception as err:
             if "insufficient funds" and "have" in str(err):
