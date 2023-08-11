@@ -2,7 +2,7 @@ import re
 
 from web3 import Web3
 from logger import logger
-from config import rpcs, nft_contract_abi, nft_ZoraCreator_contract_abi, ZoraNFTCreator_contract_abi, setupActions, defaultRoyaltyConfiguration
+from config import rpcs, nft_contract_abi, nft_ZoraCreator_contract_abi, ZoraNFTCreator_contract_abi
 
 
 class Minter:
@@ -139,10 +139,10 @@ class Minter:
                 name=name,
                 symbol=symbol,
                 editionSize=editionSize,
-                royaltyBPS=royaltyBPS*100, # royalty = 3% => royaltyBPS = 3*100
+                royaltyBPS=int(royaltyBPS*100), # royalty = 3% => royaltyBPS = 3*100
                 fundsRecipient=wallet_address,
                 defaultAdmin=wallet_address,
-                saleConfig=[web3.to_wei(mintPrice, 'ether'), mintLimitPerAddress, 1691759829, 1692019029, 0, 0, b"0x000000000000000000000000000000"],
+                saleConfig=[web3.to_wei(mintPrice, 'ether'), mintLimitPerAddress, 1691759829, 18446744073709551615, 0, 0, b"0x000000000000000000000000000000"],
                 description=description,
                 animationURI="",
                 imageURI=imageURI
