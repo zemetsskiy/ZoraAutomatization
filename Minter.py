@@ -64,7 +64,7 @@ class Minter:
             else:
                 logger.error(f"Something went wrong: {err}")
 
-    def collect_ZoraCreator(self, nft_contract_address, value_to_send): # ZoraCreator1155Impl
+    def purchase(self, nft_contract_address, value_to_send): # ZoraCreator1155Impl
 
         web3 = Web3(Web3.HTTPProvider(rpcs["zora"], request_kwargs={
             'proxies': {'https': 'http://' + "pnorwyha:snmfocltb81h@209.99.165.189:6094",
